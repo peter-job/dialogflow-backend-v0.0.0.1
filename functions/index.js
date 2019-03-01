@@ -42,8 +42,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
 
     //our intent handler - lets see if it works
     function makeTripHandler(agent) {
+      const { country } = request.parameters;
       agent.add(
-        `This message is from Pete and Seb from the other side of the net!`
+        `This message is from Pete and Seb from ${country || "outer space"}!`
       );
     }
 
