@@ -40,13 +40,17 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
       agent.add(`I'm sorry, can you try again?`);
     }
 
+    console.log(Object.keys(request.queryResult));
+
     //our intent handler - lets see if it works
-    function makeTripHandler(agent) {
-      const { country } = request.parameters;
-      agent.add(
-        `This message is from Pete and Seb from ${country || "outer space"}!`
-      );
-    }
+    const makeTripHandler = agent => {
+      /////////////////////////////////////////////////////////////////////////
+      ///       L O O K    H E R E   ||
+      //                             vv
+      ////////////////////////////////////////////////////////////////////////
+      const { country } = request.queryResult.params;
+      agent.add(`This message is from Pete and Seb from ${country || "spane"}`);
+    };
 
     // Run the proper function handler based on the matched Dialogflow intent name
     let intentMap = new Map();
