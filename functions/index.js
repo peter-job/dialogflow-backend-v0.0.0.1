@@ -14,53 +14,54 @@
 // Dialogflow fulfillment getting started guide:
 // https://dialogflow.com/docs/how-tos/getting-started-fulfillment
 
-"use strict";
+'use strict';
 
-const functions = require("firebase-functions");
-const { WebhookClient } = require("dialogflow-fulfillment");
-const { Card, Suggestion } = require("dialogflow-fulfillment");
+const functions = require('firebase-functions');
+const {WebhookClient} = require('dialogflow-fulfillment');
+const {Card, Suggestion} = require('dialogflow-fulfillment');
 
-process.env.DEBUG = "dialogflow:debug"; // enables lib debugging statements
+process.env.DEBUG = 'dialogflow:debug'; // enables lib debugging statements
 
 exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
-  (request, response) => {
-    const agent = new WebhookClient({ request, response });
-    console.log(
-      "Dialogflow Request headers: " + JSON.stringify(request.headers)
-    );
-    console.log("Dialogflow Request body: " + JSON.stringify(request.body));
+	(request, response) => {
+		const agent = new WebhookClient({request, response});
+		console.log(
+			'Dialogflow Request headers: ' + JSON.stringify(request.headers)
+		);
+		console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
 
-    //default handlers
-    function welcome(agent) {
-      agent.add(`Welcome to my agent!`);
-    }
+		//default handlers
+		function welcome(agent) {
+			agent.add(`Welcome to my agent!`);
+		}
 
-    function fallback(agent) {
-      agent.add(`I didn't understand`);
-      agent.add(`I'm sorry, can you try again?`);
-    }
+		function fallback(agent) {
+			agent.add(`I didn't understand`);
+			agent.add(`I'm sorry, can you try again?`);
+		}
 
-    console.log(Object.keys(request.queryResult));
+		// console.log(request.body.queryResult.queryText); // <--- what we write to the bot
+		// console.log(request.body.queryResult.parameters.country); // <---the paramter and value
+		// console.log(Object.keys(request.body.queryResult));
+		//our intent handler - lets see if it works
+		const makeTripHandler = (agent) => {
+			/////////////////////////////////////////////////////////////////////////
+			///       L O O K    H E R E   ||
+			//                             vv
+			////////////////////////////////////////////////////////////////////////
+			const {country} = request.body.queryResult.parameters;
+			agent.add(`This message is from Pete and Seb from  ${country}`);
+		};
 
-    //our intent handler - lets see if it works
-    const makeTripHandler = agent => {
-      /////////////////////////////////////////////////////////////////////////
-      ///       L O O K    H E R E   ||
-      //                             vv
-      ////////////////////////////////////////////////////////////////////////
-      const { country } = request.queryResult.params;
-      agent.add(`This message is from Pete and Seb from ${country || "spane"}`);
-    };
-
-    // Run the proper function handler based on the matched Dialogflow intent name
-    let intentMap = new Map();
-    console.log("intentMap created");
-    intentMap.set("Default Welcome Intent", welcome);
-    console.log("Default Welcome Intent");
-    intentMap.set("Default Fallback Intent", fallback);
-    console.log("Default Fallback Intent");
-    intentMap.set("Make Trip", makeTripHandler);
-    console.log("Pete and Seb's agent >>>>>> ", agent);
-    agent.handleRequest(intentMap);
-  }
+		// Run the proper function handler based on the matched Dialogflow intent name
+		let intentMap = new Map();
+		console.log('intentMap created');
+		intentMap.set('Default Welcome Intent', welcome);
+		console.log('Default Welcome Intent');
+		intentMap.set('Default Fallback Intent', fallback);
+		console.log('Default Fallback Intent');
+		intentMap.set('Make Trip', makeTripHandler);
+		console.log("Pete and Seb's agent >>>>>> ", agent);
+		agent.handleRequest(intentMap);
+	}
 );
