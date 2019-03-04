@@ -40,8 +40,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
 			agent.add(`I'm sorry, can you try again?`);
 		}
 
-		// console.log(request.body.queryResult.queryText); // <--- what we write to the bot
-		// console.log(request.body.queryResult.parameters.country); // <---the paramter and value
+		console.log(request.body.queryResult.queryText); // <--- what we write to the bot
+		console.log(request.body.queryResult.parameters.country); // <---the paramter and value
 		// console.log(Object.keys(request.body.queryResult));
 		//our intent handler - lets see if it works
 		const makeTripHandler = (agent) => {
@@ -50,7 +50,8 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest(
 			//                             vv
 			////////////////////////////////////////////////////////////////////////
 			const {country} = request.body.queryResult.parameters;
-			agent.add(`This message is from Pete and Seb from  ${country}`);
+			const {capital} = request.body.queryResult.parameters;
+			agent.add(`This message is from Pete and Seb from  ${capital}`);
 		};
 
 		// Run the proper function handler based on the matched Dialogflow intent name
